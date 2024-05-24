@@ -1,0 +1,77 @@
+name: CI/CD Workflow
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch: # Add manual trigger for main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: node:16.14.0
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: npm i --production
+
+  lint:
+    needs: build
+    runs-on: ubuntu-latest
+    container:
+      image: node:16.14.0
+
+    steps:
+      - uses: actions/checkout@v2
+
+  security_scan:
+    needs: build
+    runs-on: ubuntu-latest
+    container:
+      image: node:16.14.0
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Security Scan
+        uses: zricethezav/gitleaks-action@v1.5.0
+
+  deploy_dev:
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v2
+
+      - name: 📂 Sync files to development
+        uses: SamKirkland/FTP-Deploy-Action@v4.2.0
+        with:
+          server: ftp.pps507.com
+          username: ${{ secrets.DEV_FTP_USERNAME }}
+          password: ${{ secrets.DEV_FTP_PASSWORD }}
+          server-dir: /
+
+  deploy_main:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v2
+
+      - name: 📂 Sync files to production
+        uses: SamKirkland/FTP-Deploy-Action@v4.2.0
+        with:
+          server: ftp.pps507.com
+          username: ${{ secrets.PRODUCTION_FTP_USERNAME }}
+          password: ${{ secrets.PRODUCTION_FTP_PASSWORD }}
+          server-dir: /
