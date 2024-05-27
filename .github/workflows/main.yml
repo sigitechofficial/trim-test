@@ -22,8 +22,9 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+      
       - name: Install dependencies
-        run: npm i --production
+        run: npm install --production
 
   lint:
     needs: build
@@ -34,6 +35,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Lint
+        run: npm run lint
+
   security_scan:
     needs: build
     runs-on: ubuntu-latest
@@ -42,6 +49,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      
+      - name: Install dependencies
+        run: npm install
 
       - name: Security Scan
         uses: zricethezav/gitleaks-action@v1.5.0
@@ -60,6 +70,8 @@ jobs:
           username: ${{ secrets.DEV_FTP_USERNAME }}
           password: ${{ secrets.DEV_FTP_PASSWORD }}
           server-dir: /
+          protocol: ftp
+          passive: true  # Add this line to enable passive mode
 
   deploy_main:
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
@@ -74,3 +86,6 @@ jobs:
           server: ftp.trimworldwide.com
           username: ${{ secrets.LIVE_FTP_USERNAME }}
           password: ${{ secrets.LIVE_FTP_PASSWORD }}
+          server-dir: /
+          protocol: ftp
+          passive: true  # Add this line to enable passive mode
