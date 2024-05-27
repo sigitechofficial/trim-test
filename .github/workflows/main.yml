@@ -56,11 +56,12 @@ jobs:
       - name: 📂 Sync files to development
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ftp.trimworldwide.com
+          server: ${{ secrets.DEV_FTP_SERVER }}
           username: ${{ secrets.DEV_FTP_USERNAME }}
           password: ${{ secrets.DEV_FTP_PASSWORD }}
           server-dir: /
-
+          passive: true  # or false
+          timeout: 120000  # Increase timeout
   deploy_main:
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
@@ -71,7 +72,9 @@ jobs:
       - name: 📂 Sync files to production
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ftp.trimworldwide.com
+          server: ${{ secrets.LIVE_FTP_SERVER }}
           username: ${{ secrets.LIVE_FTP_USERNAME }}
           password: ${{ secrets.LIVE_FTP_PASSWORD }}
           server-dir: /
+          passive: true  # or false
+          timeout: 120000  # Increase timeout
