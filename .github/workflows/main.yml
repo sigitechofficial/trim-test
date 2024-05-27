@@ -56,10 +56,16 @@ jobs:
       - name: 📂 Sync files to development
         uses: SamKirkland/FTP-Deploy-Action@v4.3.1
         with:
-          server: ftp.trimworldwide.com
+          # server: ftp.trimworldwide.com
+          # username: ${{ secrets.DEV_FTP_USERNAME }}
+          # password: ${{ secrets.DEV_FTP_PASSWORD }}
+          # server-dir: /
+          server: sftp.trimworldwide.com
           username: ${{ secrets.DEV_FTP_USERNAME }}
           password: ${{ secrets.DEV_FTP_PASSWORD }}
           server-dir: /
+          protocol: 'sftp'
+          timeout: 120s # Increase timeout to 120 seconds
 
   deploy_main:
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
