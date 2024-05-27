@@ -54,7 +54,7 @@
 #         uses: actions/checkout@v2
 
 #       - name: 📂 Sync files to development
-#         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+#         uses: SamKirkland/FTP-Deploy-Action@v4.3.1
 #         with:
 #           server: ftp.trimworldwide.com
 #           username: ${{ secrets.DEV_FTP_USERNAME }}
@@ -132,7 +132,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: 📂 Sync files to development
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.1
         with:
           server: ftp.trimworldwide.com
           username: ${{ secrets.DEV_FTP_USERNAME }}
@@ -140,7 +140,7 @@ jobs:
           server-dir: /
           protocol: 'ftp'
           passive: true
-          timeout: 60s
+          timeout: 60000s
 
   deploy_main:
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
@@ -158,5 +158,5 @@ jobs:
           server-dir: /
           protocol: 'ftp'
           passive: true
-          timeout: 60s
+          timeout: 60000s
 
