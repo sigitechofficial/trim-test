@@ -64,7 +64,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: 📂 Sync files to development
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.1
         with:
           server: ftp.trimworldwide.com
           username: ${{ secrets.DEV_FTP_USERNAME }}
@@ -81,7 +81,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: 📂 Sync files to production
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.1
         with:
           server: ftp.trimworldwide.com
           username: ${{ secrets.LIVE_FTP_USERNAME }}
