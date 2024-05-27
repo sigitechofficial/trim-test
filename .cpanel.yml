@@ -1,5 +1,5 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/trimworldwide/backend.trimworldwide.com/
+    - export DEPLOYPATH=/home/trimworldwide/live.trimworldwide.com/
     - /bin/cp -r * $DEPLOYPATH
