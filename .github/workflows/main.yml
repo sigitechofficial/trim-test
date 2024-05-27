@@ -22,9 +22,8 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      
       - name: Install dependencies
-        run: npm install --production
+        run: npm i --production
 
   lint:
     needs: build
@@ -35,12 +34,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run Lint
-        run: npm run lint
-
   security_scan:
     needs: build
     runs-on: ubuntu-latest
@@ -49,9 +42,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      
-      - name: Install dependencies
-        run: npm install
 
       - name: Security Scan
         uses: zricethezav/gitleaks-action@v1.5.0
@@ -64,18 +54,12 @@ jobs:
         uses: actions/checkout@v2
 
       - name: 📂 Sync files to development
-        uses: SamKirkland/FTP-Deploy-Action@4.3.1
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ftp.trimworldwide.com
           username: ${{ secrets.DEV_FTP_USERNAME }}
           password: ${{ secrets.DEV_FTP_PASSWORD }}
           server-dir: /
-          protocol: ftps
-          local-dir: ./  # Specify your local directory if needed
-          state-name: deploy-dev-state.json
-          dry-run: false
-          passive: true
-          timeout: 60000  # Add this line to increase timeout
 
   deploy_main:
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
@@ -85,15 +69,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: 📂 Sync files to production
-        uses: SamKirkland/FTP-Deploy-Action@4.3.1
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ftp.trimworldwide.com
           username: ${{ secrets.LIVE_FTP_USERNAME }}
           password: ${{ secrets.LIVE_FTP_PASSWORD }}
           server-dir: /
-          protocol: ftps
-          local-dir: ./  # Specify your local directory if needed
-          state-name: deploy-main-state.json
-          dry-run: false
-          passive: true
-          timeout: 60000  # Add this line to increase timeout
